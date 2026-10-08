@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Greenwood Register · School Management System</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,500;0,9..144,600;0,9..144,700;1,9..144,500&family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div id="loginScreen">
+  <div class="login-card">
+    <div class="login-head">
+      <div class="seal">OS</div>
+      <h1>Osbert Senior High School</h1>
+      <p>School Management System</p>
+    </div>
+    <div class="login-error" id="loginError">Incorrect username or password for this role.</div>
+    <label>Sign in as</label>
+    <div class="role-row" id="roleRow">
+      <div class="role-opt active" data-role="admin">Admin</div>
+      <div class="role-opt" data-role="teacher">Teacher</div>
+      <div class="role-opt" data-role="student">Student</div>
+    </div>
+    <label>Username</label>
+    <input id="loginUser" placeholder="e.g. admin" autocomplete="username">
+    <label>Password</label>
+    <input id="loginPass" type="password" placeholder="••••••••" autocomplete="current-password">
+    <button class="btn-primary" onclick="attemptLogin()">Enter Register &rarr;</button>
+   
+  </div>
+</div>
+
+<div id="app">
+  <div class="mobile-topbar" id="mobileTopbar">
+    <button class="mobile-menu-btn" id="mobileMenuBtn" onclick="toggleMobileNav()"><span></span><span></span><span></span></button>
+    <div class="m-brand">
+      <div class="seal">OS</div>
+      <div><b>Osbert Senior High</b><span>School System</span></div>
+    </div>
+    <span style="width:38px;"></span>
+  </div>
+  <div class="mobile-nav-dropdown" id="mobileNavDropdown"></div>
+
+  <aside>
+    <div class="brand">
+      <div class="seal">OS</div>
+      <div class="brand-text"><b>Osbert Senior High</b><span>School System</span></div>
+    </div>
+    <nav id="navList"></nav>
+    <div class="who">
+      <b id="whoName">—</b>
+      <span id="whoRole">—</span>
+    </div>
+    <button class="logout-btn" onclick="logout()">Sign out</button>
+  </aside>
+
+  <main>
+    <section class="page" data-page="dashboard">
+      <div class="page-head">
+        <div><span class="eyebrow">Overview</span><h2>Dashboard</h2><p class="sub" id="dashDate"></p></div>
+      </div>
+      <div id="greetBanner"></div>
+      <div id="noticeBannerDash"></div>
+      <div id="smsBannerDash"></div>
+      <div class="stats" id="statCards"></div>
+      <div class="panel">
+        <div class="panel-head"><h3>Today at a glance</h3></div>
+        <div class="panel-body" id="dashBody"></div>
+      </div>
+    </section>
+
+    <section class="page" data-page="vclass">
+      <div class="page-head">
+        <div><span class="eyebrow">A separate portal · own database</span><h2>Virtual Classroom</h2><p class="sub">Courses, assignments and grading — kept apart from the main school register.</p></div>
+      </div>
+      <div class="vc-shell">
+        <div class="vc-topbar">
+          <div class="vc-brand">V<span>-Class</span><small>Virtual Classroom</small></div>
+          <div class="vc-tabs" id="vcTabs"></div>
+        </div>
+        <div id="vcContent"></div>
+      </div>
+    </section>
+
+    <section class="page" data-page="students">
+      <div class="page-head">
+        <div><span class="eyebrow">Records</span><h2>Students</h2><p class="sub">Enrollment, class placement and guardian contact.</p></div>
+        <button class="btn-sm" onclick="openStudentModal()">+ Admit Student</button>
+      </div>
+      <div class="filters">
+        <div class="fld"><label>Search</label><input id="stuSearch" placeholder="Name or roll no." oninput="renderStudents()"></div>
+        <div class="fld"><label>Class</label><select id="stuFilterClass" onchange="renderStudents()"><option value="">All classes</option></select></div>
+      </div>
+      <div class="panel"><div class="panel-body" style="padding:0;"><table><thead><tr><th>Roll No.</th><th>Name</th><th>Class</th><th>Course</th><th>Guardian</th><th>Contact</th><th>Status</th><th></th></tr></thead><tbody id="studentTable"></tbody></table></div></div>
+    </section>
+
+    <section class="page" data-page="teachers">
+      <div class="page-head">
+        <div><span class="eyebrow">Records</span><h2>Teachers</h2><p class="sub">Staff assignments and subjects taught.</p></div>
+        <button class="btn-sm" onclick="openTeacherModal()">+ Add Teacher</button>
+      </div>
+      <div class="panel"><div class="panel-body" style="padding:0;"><table><thead><tr><th>ID</th><th>Name</th><th>Subject</th><th>Assigned Class</th><th>Contact</th><th></th></tr></thead><tbody id="teacherTable"></tbody></table></div></div>
+    </section>
+
+    <section class="page" data-page="classes">
+      <div class="page-head">
+        <div><span class="eyebrow">Structure</span><h2>Classes &amp; Subjects</h2><p class="sub">Define the classes and subjects used across the register.</p></div>
+        <button class="btn-sm" onclick="openClassModal()">+ Add Class</button>
+      </div>
+      <div class="panel"><div class="panel-body" style="padding:0;"><table><thead><tr><th>Class</th><th>Class Teacher</th><th>Subjects</th><th>Students</th><th></th></tr></thead><tbody id="classTable"></tbody></table></div></div>
+    </section>
+
+    <section class="page" data-page="attendance">
+      <div class="page-head">
+        <div><span class="eyebrow">Daily Record</span><h2>Attendance</h2><p class="sub">Mark and review attendance by class and date.</p></div>
+      </div>
+      <div class="filters">
+        <div class="fld"><label>Class</label><select id="attClass" onchange="renderAttendanceGrid()"></select></div>
+        <div class="fld"><label>Date</label><input type="date" id="attDate" onchange="renderAttendanceGrid()"></div>
+        <button class="btn-amber" onclick="saveAttendance()">Save Attendance</button>
+      </div>
+      <div class="panel"><div class="panel-body">
+        <div class="att-grid" id="attGrid"></div>
+      </div></div>
+      <div class="panel">
+        <div class="panel-head"><h3>Attendance summary (last 30 days)</h3></div>
+        <div class="panel-body" id="attSummary"></div>
+      </div>
+    </section>
+
+    <section class="page" data-page="exams">
+      <div class="page-head">
+        <div><span class="eyebrow">Assessment</span><h2>Examinations &amp; Results</h2><p class="sub">Create exams and record subject-wise marks.</p></div>
+        <button class="btn-sm" onclick="openExamModal()">+ New Exam</button>
+      </div>
+      <div class="panel"><div class="panel-body" style="padding:0;"><table><thead><tr><th>Exam</th><th>Class</th><th>Date</th><th>Subjects</th><th></th></tr></thead><tbody id="examTable"></tbody></table></div></div>
+    </section>
+
+    <section class="page" data-page="fees">
+      <div class="page-head">
+        <div><span class="eyebrow">Finance</span><h2>Fee Management</h2><p class="sub">Track dues and payments per student.</p></div>
+        <button class="btn-sm" onclick="openFeeModal()">+ Record Payment</button>
+      </div>
+      <div class="stats" id="feeStats"></div>
+      <div class="panel"><div class="panel-body" style="padding:0;"><table><thead><tr><th>Student</th><th>Class</th><th>Term</th><th>Amount Due</th><th>Amount Paid</th><th>Status</th><th></th></tr></thead><tbody id="feeTable"></tbody></table></div></div>
+    </section>
+
+    <section class="page" data-page="myfees">
+      <div class="page-head">
+        <div><span class="eyebrow">Finance</span><h2>My Fees</h2><p class="sub">Your payment status for the current school year.</p></div>
+      </div>
+      <div id="smsBannerFees"></div>
+      <div class="stats" id="myFeeStats"></div>
+      <div class="panel"><div class="panel-body" style="padding:0;"><table><thead><tr><th>Term</th><th>Amount Due</th><th>Amount Paid</th><th>Balance</th><th>Status</th></tr></thead><tbody id="myFeeTable"></tbody></table></div></div>
+    </section>
+
+    <section class="page" data-page="myresults">
+      <div class="page-head">
+        <div><span class="eyebrow">Assessment</span><h2>My Results</h2><p class="sub">Your marks from every recorded exam.</p></div>
+      </div>
+      <div id="myResultsBody"></div>
+    </section>
+
+    <section class="page" data-page="timetable">
+      <div class="page-head">
+        <div><span class="eyebrow">Schedule</span><h2>Timetable</h2><p class="sub" id="ttSub">Weekly period plan for a class.</p></div>
+      </div>
+      <div class="filters">
+        <div class="fld"><label>Class</label><select id="ttClass" onchange="renderTimetable()"></select></div>
+        <button class="btn-amber" id="ttSaveBtn" onclick="saveTimetable()">Save Timetable</button>
+      </div>
+      <div class="panel"><div class="panel-body" style="overflow-x:auto;"><div id="ttWrap"></div></div></div>
+    </section>
+
+    <section class="page" data-page="reports">
+      <div class="page-head">
+        <div><span class="eyebrow">Insights</span><h2>Reports</h2><p class="sub">Generated summaries across the register.</p></div>
+        <button class="btn-ghost" onclick="window.print()">Print report</button>
+      </div>
+      <div id="reportsBody"></div>
+    </section>
+
+    <section class="page" data-page="users">
+      <div class="page-head">
+        <div><span class="eyebrow">Access</span><h2>User Accounts</h2><p class="sub">Create login credentials for teachers and students.</p></div>
+        <button class="btn-sm" onclick="openUserModal()">+ Add User</button>
+      </div>
+      <div class="panel"><div class="panel-body" style="padding:0;"><table><thead><tr><th>Username</th><th>Role</th><th>Linked record</th><th></th></tr></thead><tbody id="userTable"></tbody></table></div></div>
+    </section>
+  </main>
+</div>
+
+<div class="overlay" id="modalOverlay">
+  <div class="modal" id="modalBox"></div>
+</div>
+
+<div class="toast" id="toast"><span class="dot"></span><span id="toastMsg"></span></div>
+
+<script src="script.js"></script>
+</body>
+</html>

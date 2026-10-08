@@ -1,0 +1,12 @@
+{
+  "name": "school-management-system",
+  "version": "2.0.0",
+  "description": "Osbert Senior High School Management System with a SQL database",
+  "main": "server.js",
+  "scripts": {
+    "start": "node --disable-warning=ExperimentalWarning server.js"
+  },
+  "engines": { "node": ">=22.13" },
+  "license": "UNLICENSED",
+  "private": true
+}
