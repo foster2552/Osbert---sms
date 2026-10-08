@@ -1,4 +1,4 @@
-<link rel="manifest" href="manifest.json">
+
   # School Management System (SQL database version)
 
 ## Run it
