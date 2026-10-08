@@ -1,4 +1,5 @@
-# School Management System (SQL database version)
+<link rel="manifest" href="manifest.json">
+  # School Management System (SQL database version)
 
 ## Run it
 1. Install Node.js 22.13 or newer (https://nodejs.org).
